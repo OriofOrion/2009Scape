@@ -1,0 +1,14 @@
+# Godot 4 generated/local files
+.godot/
+.import/
+export.cfg
+export_credentials.cfg
+*.translation
+
+# Android export artifacts
+android/build/
+*.apk
+*.aab
+
+# OS
+.DS_Store
