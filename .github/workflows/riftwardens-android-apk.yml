@@ -9,6 +9,9 @@ on:
       - "RiftWardens/**"
       - ".github/workflows/riftwardens-android-apk.yml"
 
+permissions:
+  contents: write
+
 jobs:
   build-apk:
     runs-on: ubuntu-latest
@@ -79,3 +82,20 @@ jobs:
           name: RiftWardens-debug-apk
           path: RiftWardens/build/RiftWardens.apk
           if-no-files-found: error
+
+      # Actions artifacts are served from Azure Blob Storage, which some
+      # sandboxed/restricted networks (including the one this was built
+      # from) cannot reach. A GitHub Release asset is served from
+      # github.com / githubusercontent.com instead, which is reachable
+      # much more broadly - so publish the APK there too as the primary
+      # way to fetch it.
+      - name: Publish APK as a GitHub Release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: riftwardens-debug-apk
+          name: "Rift Wardens - debug APK (latest)"
+          body: |
+            Auto-built debug APK for sideloading onto an Android phone to test Rift Wardens.
+            Built from commit ${{ github.sha }} by the RiftWardens Android APK workflow.
+            Not signed for the Play Store - debug-signed only, for local testing.
+          files: RiftWardens/build/RiftWardens.apk
